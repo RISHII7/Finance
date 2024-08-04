@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1722749698006,
+      "tag": "0000_cuddly_red_ghost",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1722750443088,
+      "tag": "0001_known_venus",
+      "breakpoints": true
+    }
+  ]
+}
