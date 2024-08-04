@@ -1,10 +1,11 @@
-import { UserButton } from "@clerk/nextjs"
+"use client";
 
 const DashboardPage = () => {
   return (
     <div>
-        Soon to be Dashboard hehe!!!
+      HEHEHE!!!!!!!
     </div>
-  )
-}
-export default DashboardPage
+  );
+};
+
+export default DashboardPage;
