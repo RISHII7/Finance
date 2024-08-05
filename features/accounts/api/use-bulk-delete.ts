@@ -5,10 +5,10 @@ import { client } from "@/lib/hono";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-type ResponseType = InferResponseType<typeof client.api.accounts.$post>;
-type RequestType = InferRequestType<typeof client.api.accounts.$post>["json"];
+type ResponseType = InferResponseType<typeof client.api.accounts["bulk-delete"]["$post"]>;
+type RequestType = InferRequestType<typeof client.api.accounts["bulk-delete"]["$post"]>["json"];
 
-export const useCreateAccount = () => {
+export const useBulkDeleteAccounts = () => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation<
@@ -17,15 +17,16 @@ export const useCreateAccount = () => {
         RequestType
     >({
         mutationFn: async (json) => {
-            const response = await client.api.accounts.$post({ json });
+            const response = await client.api.accounts["bulk-delete"]["$post"]({ json });
             return await response.json();
         },
         onSuccess: () => {
-            toast.success("Account Created");
+            toast.success("Account(s) Deleted");
             queryClient.invalidateQueries({ queryKey: ["accounts"] });
+            // TODO: Also Invalidate Summary
         },
         onError: () => {
-            toast.error("Failed to create Account");
+            toast.error("Failed to delete accounts");
         },
     });
 
