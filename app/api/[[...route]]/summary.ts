@@ -8,7 +8,7 @@ import { differenceInDays, parse, subDays } from "date-fns";
 import { db } from "@/db/drizzle";
 import { and, desc, eq, gte, lt, lte, sql, sum } from "drizzle-orm";
 import { accounts, categories, transactions } from "@/db/schema";
-import { calculatePercentageChange, fillMissingDays } from "@/lib/utils";
+import { calculatePercentage, fillMissingDays } from "@/lib/utils";
 
 const app = new Hono()
     .get(
@@ -45,6 +45,7 @@ const app = new Hono()
             const lastPeriodStart = subDays(startDate, periodLength);
             const lastPeriodEnd = subDays(endDate, periodLength);
 
+
             async function fetchFinancialData(
                 userId: string,
                 startDate: Date,
@@ -79,16 +80,24 @@ const app = new Hono()
                 startDate,
                 endDate
             );
-
             const [lastPeriod] = await fetchFinancialData(
                 auth.userId,
-                startDate,
-                endDate
+                lastPeriodStart,
+                lastPeriodEnd
             );
 
-            const incomeChange = calculatePercentageChange(currentPeriod.income, lastPeriod.income);
-            const expensesChange = calculatePercentageChange(currentPeriod.expenses, lastPeriod.expenses);
-            const remainingChange = calculatePercentageChange(currentPeriod.remaining, lastPeriod.remaining);
+            const incomeChange = calculatePercentage(
+                currentPeriod.income,
+                lastPeriod.income
+            );
+            const expensesChange = calculatePercentage(
+                currentPeriod.expenses,
+                lastPeriod.expenses
+            );
+            const remainingChange = calculatePercentage(
+                currentPeriod.remaining,
+                lastPeriod.remaining
+            );
 
             const category = await db
                 .select({
@@ -129,7 +138,7 @@ const app = new Hono()
             const otherSum = otherCategories.reduce((acc, curr) => acc + curr.value, 0);
 
             const finalCategories = topCategories;
-            
+
             if (otherCategories.length > 0) {
                 finalCategories.push({ name: "Other", value: otherSum });
             };
